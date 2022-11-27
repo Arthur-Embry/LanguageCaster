@@ -246,7 +246,6 @@ p.optionChanged = function (uiOnlyOption) {
   this.editors.forEach(function (editor) {
     editor.renderer.setShowGutter(self.showGutter);
   });
-
   if (!uiOnlyOption) {
     this.tryCompile();
   }
@@ -488,12 +487,9 @@ p.getShareUrl = function () {
   return url;
 };
 p.share = function share() {
-  var self = this;
-  shortenUrl(this.getShareUrl(), function (url) {
-    self.sharingLink = url;
-    self._scope.$apply();
-    // $('#shareURL').val(url).select();
-  });
+  this.sourceEditor.setValue(document.querySelector("#downloadLink").getAttribute("data-uncompiled"), -1);
+  code=this.sourceEditor.getValue();
+  this.compile();
 };
 p.assemble = function assemble() {
   var self = this;
@@ -1232,3 +1228,9 @@ p.run = function () {
     }
   }
 };
+
+
+
+
+
+//console.log("sanity check 1")

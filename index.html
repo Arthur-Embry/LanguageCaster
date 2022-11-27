@@ -5,258 +5,36 @@
 <html lang="en" >
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Angular Material style sheet -->
-    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
     <script src="lib/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="lib/src-min-noconflict/ext-language_tools.js"></script>
-    
     <script src="lib/base64.js"></script>
     <script src="x86Reference/ref.js"></script>
     <script src="https://togetherjs.com/togetherjs-min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-    </head>
-    <body ng-app="WasmExplorerApp" ng-cloak layout="column" ng-controller="WasmExplorerAppCtrl as vm">
-      <style type="text/css">
-      
-      i { vertical-align: middle !important; }
-
-      .ace_tooltip {
-        font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-      }
-      </style>
-      <md-progress-linear  md-mode="{{vm.progressMode}}"></md-progress-linear>
-      <div>
-        <md-toolbar class="md-toolbar-tools" style="background-color: #424242;">
-        <md-button class="md-icon-button md-primary" aria-label="Settings" ng-click="vm.toggleOptions()">
-        <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
-        </md-button>
-        <span style="font-weight: bold;">WebAssembly Explorer</span>
-        <span flex></span>
-        <span style="font-style:italic; color: yellow;">
-          &#x261D;
-          Please also check out <a href="https://webassembly.studio">WebAssembly Studio</a>
-          &#x1F44D;
-        </span>
-        <span flex></span>
-        <span>{{vm.appVersion}}</span>
-        </md-toolbar>
-      </div>
-      <div layout="row" flex>
-        <md-sidenav flex class="md-sidenav-left md-whiteframe-z2" md-component-id="left" style="max-width: 300px; background-color: #F5F5F5;" md-is-locked-open="vm.showOptions">
-        <md-toolbar style="background-color: #757575">
-        <div class="md-toolbar-tools">
-          <h2>
-          <span>Options</span>
-          </h2>
-        </div>
-        </md-toolbar>
-        <md-content layout-padding style="background-color: #F5F5F5;">
-        <form name="userForm">
-          <md-switch class="md-primary" md-no-ink aria-label="Auto Compile" ng-model="vm.autoCompile" ng-change="vm.optionChanged()">
-          <md-tooltip md-direction="top">
-          Automatically compiles when an option is changed
-          </md-tooltip>
-          Auto Compile
-          </md-switch>
-
-          <md-switch class="md-primary" md-no-ink aria-label="Show LLVM" ng-model="vm.showLLVM" ng-change="vm.optionChanged()">
-          <md-tooltip md-direction="top">
-          Show LLVM x86 assembly generated from C/C++ directly.
-          </md-tooltip>
-          LLVM x86 Assembly
-          </md-switch>
-
-          <md-select ng-model="vm.selectedExample" md-selected-text="vm.getSelectedExampleText()" ng-change="vm.changeExample()">
-          <md-optgroup label="Examples">
-          <md-option ng-value="item" ng-repeat="item in vm.examples">{{item}}</md-option>
-          </md-optgroup>
-          </md-select>
-          
-          <md-select ng-model="vm.dialect" md-selected-text="vm.getSelectedDialectText()" ng-change="vm.optionChanged()">
-          <md-optgroup label="Languages">
-          <md-option ng-value="item" ng-repeat="item in vm.dialects">{{item}}</md-option>
-          </md-optgroup>
-          </md-select>
-          <label>Optimization Level</label>
-          <md-select ng-model="vm.optimizationLevel" md-selected-text="vm.getSelectedOptimizationLevelText()" ng-change="vm.optionChanged()">
-          <md-optgroup label="Optimization Level">
-          <md-option ng-value="item" ng-repeat="item in vm.optimizationLevels">{{item}}</md-option>
-          </md-optgroup>
-          </md-select>
-          <md-checkbox ng-model="vm.fastMath" aria-label="Fast Math" ng-change="vm.optionChanged()">
-          <md-tooltip md-direction="top">
-          Lets the compiler make aggressive, potentially-lossy assumptions about floating-point math.
-          </md-tooltip>
-          Fast Math
-          </md-checkbox><br>
-          <md-checkbox ng-model="vm.noInline" aria-label="No Inline" ng-change="vm.optionChanged()">
-          No Inline
-          </md-checkbox><br>
-          <md-checkbox ng-model="vm.noRTTI" aria-label="No RTTI" ng-change="vm.optionChanged()">
-          No RTTI
-          </md-checkbox><br>
-          <md-checkbox ng-model="vm.noExceptions" aria-label="No Exceptions" ng-change="vm.optionChanged()">
-          No Exceptions
-          </md-checkbox><br>
-          <md-checkbox ng-model="vm.cleanWast" aria-label="Clean WAT" ng-change="vm.optionChanged()">
-          Clean WAT
-          </md-checkbox><br>
-          <md-checkbox ng-model="vm.wasmBaseline" aria-label="Baseline JIT" ng-change="vm.optionChanged()">
-          Baseline JIT
-          </md-checkbox><br>
-
-          
-          <md-button ng-click="vm.openInFiddle($event)" class="md-raised" style="margin-left: -3px; width: 100%">Open in WasmFiddle
-          <md-tooltip md-direction="top">
-          Opens C/C++ file in WasmFiddle
-          </md-tooltip>
-          </md-button><br>
-
-          <md-button ng-click="vm.fileBug($event)" class="md-raised" style="margin-left: -3px; width: 100%">File Bugzilla Bug
-          <md-tooltip md-direction="top">
-          File a bug with the highlighted text.
-          </md-tooltip>
-          </md-button><br>
-          <md-button ng-click="vm.collaborate($event)" class="md-raised" style="margin-left: -3px; width: 100%">Collaborate</md-button><br>
-          <md-button ng-click="vm.share($event)" class="md-raised" style="margin-left: -3px; width: 100%">Create a Persistent Link</md-button>
-
-          <md-input-container class="md-block">
-          <label>Sharing Link</label>
-          <input name="clientName" ng-model="vm.sharingLink">
-          </md-input-container>
-          
-          <label>Editor Options</label>
-          <md-switch class="md-primary" md-no-ink aria-label="Dark Mode" ng-model="vm.darkMode" ng-change="vm.optionChanged(true)">
-          Dark Mode
-          </md-switch>
-          <md-switch class="md-primary" md-no-ink aria-label="Show Gutter" ng-model="vm.showGutter" ng-change="vm.optionChanged(true)">
-          Show Gutter
-          </md-switch>
-        </form>
-        </md-content>
-        </md-sidenav>
-        
-        <div layout="column" flex>
-          <div flex layout="row">
-            <div flex layout="column">
-              <md-toolbar style="background-color: #e74c3c">
-              <div class="md-toolbar-tools">
-                <span>{{vm.dialect}} -O{{vm.optimizationLevel}}</span>
-                <span flex></span>
-                <md-button ng-click="vm.compile($event)" class="md-raised">
-                <md-tooltip md-direction="top">
-                Compile C/C++ to Wat (Ctrl / Cmd + Enter)
-                </md-tooltip>
-                Compile</md-button>
-                <!-- <md-button ng-click="vm.execute($event)" class="md-raised">
-                Execute</md-button> -->
-              </div>
-              </md-toolbar>
-              <div flex id="sourceCodeContainer"></div>
-            </div>
-            <div flex layout="column" ng-show="!vm.showLLVM">
-              <md-toolbar style="background-color: #9b59b6">
-              <div class="md-toolbar-tools">
-                <span>Wat</span>
-                <span flex></span>
-                <md-button ng-click="vm.assemble($event)" class="md-raised">
-                <md-tooltip md-direction="top">
-                Compile/Assemble .wat using SpiderMonkey (Ctrl / Cmd + Enter)
-                </md-tooltip>
-                Assemble</md-button>
-                <md-button ng-click="vm.download($event)" class="md-raised">
-                <md-tooltip md-direction="top">
-                Convert .wat to .wasm and download
-                </md-tooltip>
-                Download</md-button>
-              </div>
-              </md-toolbar>
-              <div id="wastCodeContainer" flex></div>
-            </div>
-            <div flex flex layout="column">
-              <md-toolbar style="background-color: #2980b9">
-              <div class="md-toolbar-tools">
-                <span>Firefox x86 Assembly</span>
-                <span flex></span>
-                <md-button ng-click="vm.toggleLLVM($event)" class="md-icon-button">
-                  <i class="material-icons">{{vm.showLLVM ? "chevron_right" : "chevron_left"}}</i>
-                  <md-tooltip md-direction="top">
-                    Show / Hide LLVM x86 Assembly
-                  </md-tooltip>
-                  </md-button>
-              </div>
-              </md-toolbar>
-              <div flex id="assemblyCodeContainer"></div>
-              <div style="background-color: #2980b9; color: #FAFAFA; height: 22x; padding: 6px; font-size: 14px;">
-                <i class="material-icons" style="font-size: 18px;">help</i>
-                <a href="{{vm.x86ReferencePath}}{{vm.instructionDescription.path}}.html" target="x86Reference" style="color: #FAFAFA;">{{vm.instructionDescription.description}}</a>
-              </div>
-            </div>
-            <div flex flex layout="column" ng-show="vm.showLLVM">
-              <md-toolbar style="background-color: #3E2723">
-              <div class="md-toolbar-tools">
-                <h2>
-                <span>LLVM x86 Assembly</span>
-                </h2>
-              </div>
-              </md-toolbar>
-              <div flex id="llvmAssemblyCodeContainer"></div>
-              <div style="background-color: #3E2723; color: #FAFAFA; height: 22x; padding: 6px; font-size: 14px;">
-                <i class="material-icons" style="font-size: 18px;">help</i>
-                <a href="{{vm.x86ReferencePath}}{{vm.llvmInstructionDescription.path}}.html" target="x86Reference" style="color: #FAFAFA;">{{vm.llvmInstructionDescription.description}}</a>
-              </div>
-            </div>
-          </div>
-
-          <div layout="column">
-            
-            <md-toolbar class="md-toolbar-tools" style="background-color: #424242; min-height: 20px; height: 34px;">
-            <md-button ng-click="vm.toggleConsole($event)" class="md-icon-button">
-            <i class="material-icons">{{vm.showConsole ? "expand_more" : "expand_less"}}</i>
-            </md-button>
-            <span class="md-subhead">
-              Console
-            </span>
-            <span flex></span>
-            <span class="md-body-2">{{vm.consoleEditor.session.getLength()}}</span>
-            </md-toolbar>
-            <div style="height: 200px" id="consoleContainer" ng-show="vm.showConsole"></div>
-          </div>
-        </div>
-      </div>
-      
-      <style type="text/css">
-      
-      </style>
-      
-      <!-- Angular Material requires Angular.js Libraries -->
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
-      <!-- Angular Material Library -->
-      <script src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
-      
-      <script src="config.js"></script>
-      <script src="v2.js"></script>
-      <script src="examples.js"></script>
-      <div style="position: absolute; top: 0px; right: 0x; width: 0px; height: 0px; overflow: hidden;">
-        <a id="downloadLink" href="" download="test.wasm"></a>
-      </div>
-      <div id="blockOverlay" style="width: 100%; position: absolute; z-index: 50; top: 128; left: 0; background-color: red; opacity: 0; display: none;"></div>
-
-      <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-        ga('create', 'UA-93230088-1', 'auto');
-        ga('send', 'pageview');
-        window.addEventListener('serviceevent', function (e) {
-          ga('send', 'event', 'Service', 'send', e.detail.label);
-        });
-      </script>
-    </body>
+    <script defer src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+    <script defer src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
+    <script defer src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>
+    <script defer src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>
+    <script defer src="//ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
+    <script defer src="config.js"></script>
+    <script defer src="v2.js"></script>
+    <script defer src="examples.js"></script>
+    <script src="injection.js"></script>
+    <script>
+      cpp(`#include <stdio.h>
+          char *c_hello() {
+            return "Hello World"; 
+          }`).then((instance)=>{
+        let buffer = new Uint8Array(instance.exports.memory.buffer); 
+        let test = instance.exports._Z7c_hellov(); 
+        let mytext = ""; 
+        for (let i=test; buffer[i]; i++) {
+          mytext += String.fromCharCode(buffer[i]);
+        }
+        console.log(mytext); document.getElementById("textcontent").innerText = mytext;
+      });
+    </script>
+  </head>
+  <body>
+    <div id="textcontent"></div>
+  </body>
   </html>
