@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Redoc</title>
+    <!-- needed for adaptive design -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+    <!--
+    Redoc doesn't change outer page styles
+    -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    .redoc-wrap{
+      }
+    .sc-dlnjwi.eprxZf, .sc-gtsrHT.gdZoGt{
+        transform:translateY(68px);
+        margin-top: 56px;
+    }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+        //call once evey second 10 times
+        var i = 0;
+        var interval = setInterval(function(){
+            i++;
+            if(i == 1){
+                clearInterval(interval);
+            }
+           console.log(document.body.innerHTML)
+        }, 10);
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-white border-bottom border-dark">
+        <img src="https://operatorai.com/images/logo_white.png" width="50px" style="margin-right:20px;">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="/home/pages/about.html">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/home/pages/contact.html">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/home/pages/timeline.html">Time Line</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/home/pages/team.html">Our Team</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/chat.html">Operator Chat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/copywriter/fetchV4.html">Blog Monster</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/deepsearch/search.html">Deep Analytics</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/blogs/overview.htm">Url Search</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/searchtest.html">Blog Search</a>
+            </li>
+
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <a href="#"><i class="fa fa-instagram px-2" style="color:Indigo"></i></a>
+            <a href="#"><i class="fa fa-twitter px-2" style="color:LightSkyBlue"></i></a>
+            <a href="#"><i class="fa fa-facebook px-2" style="color:MediumBlue"></i></a> 
+            <a href="#"><i class="fa fa-youtube px-2" style="color:FireBrick"></i></a>
+          </form>
+        </div>
+      </nav>
+    <redoc id="redoc" spec-url='/openapi.json'></redoc>
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
+  </body>
+</html>
